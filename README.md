@@ -2,12 +2,26 @@
 
 This Python script fetches messages from Discord threads and forwards them to Telegram chats using the Discord and Telegram APIs.
 
+# Usage
+
+The script will continuously monitor the specified Discord threads for new messages and forward them to the mapped Telegram chats at random intervals. It is designed to avoid Telegram’s flood control by spacing out messages and retrying failed deliveries.
+
+## Project Structure
+
+- forwarding-script.py: The main Python script that handles fetching, formatting, and forwarding messages.
+- requirements.txt: List of Python libraries required for the project.
+
 ## Features
 
 - Uses GET requests to retrieve messages from Discord.
 - Forwards messages to specific Telegram chats.
 - Cleans and formats the text before sending.
 - Operates with intervals to avoid rate limiting.
+
+## Troubleshooting
+
+- 401 Unauthorized Error: Ensure that your Discord token and cookies are correctly set and haven’t expired.
+- Flood control errors: If you see rate limit errors from Telegram, the script will automatically retry after the required delay.
 
 ## Requirements
 
