@@ -41,6 +41,11 @@ The script will continuously monitor the specified Discord threads for new messa
 
 This project is licensed under the MIT License.
 
+---------------------------------------------------------------------
+
+### Updates (more info in CHANGELOG.md):
+- The script now tracks the last sent message and forwards only new messages using the `last_message_id` functionality.
+
 
 ---------------------------------------------------------------------
 
