@@ -17,12 +17,12 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 
-# Constants
+# Constants (replace with your own tokens)
 DISCORD_TOKEN = 'your_discord_token'  # Replace with your Discord token
 TELEGRAM_TOKEN = 'your_telegram_token'  # Replace with your Telegram token
 KIEV_TIMEZONE = pytz.timezone('Europe/Kiev')
 
-# User-Agent and Cookies for HTTP requests
+# User-Agent and Cookies for HTTP requests (replace with your own values)
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.36',
     'Authorization': DISCORD_TOKEN
@@ -37,9 +37,12 @@ COOKIES = {
     "_cfuvid": "your_cfuvid"
 }
 
-# Mapping of Discord threads to Telegram channels
+# Set the initial last_message_id manually (use the last known message ID here)
+last_message_id = 'your_last_message_id'  # Set the last message ID from which you want to start
+
+# Mapping of Discord threads to Telegram channels (replace with your IDs)
 FORUM_THREAD_MAPPING = {
-    1060168170318606446: ('-1002082789826', 6693)  # Example: "Garry" thread on Discord
+    'your_Discord,message_id': ('your_telegram_channel_id', 'telegram_id-thred')  # Example mapping: Discord thread -> Telegram channel
 }
 
 # Telegram bot setup
@@ -49,13 +52,10 @@ dp = Dispatcher()
 # Queue to store new messages from Discord threads
 message_queue = []
 
-# Get current time in Kiev
-def get_current_time_in_kiev():
-    return datetime.now(KIEV_TIMEZONE)
-
 # Clean text before sending to Telegram
 def clean_text(text):
-    text = re.sub(r'<@&\d+>', '', text)  # Remove mentions or any unnecessary elements
+    # Remove mentions or any unnecessary elements
+    text = re.sub(r'<@&\d+>', '', text)
     return html.escape(text)
 
 # Send a message to Telegram
@@ -93,12 +93,15 @@ async def frequent_task():
 
 # Check for new messages from Discord and add them to the queue
 async def check_new_messages():
+    global last_message_id  # To keep track of the last processed message ID
     for discord_channel_id, (telegram_chat_id, thread_id) in FORUM_THREAD_MAPPING.items():
         messages = fetch_discord_messages(discord_channel_id)
         if messages:
-            for message in messages:
-                logging.info(f"New message from {message['author']['username']}: {message['content']}")
-                message_queue.append((message, telegram_chat_id, thread_id))
+            for message in reversed(messages):  # Process messages from oldest to newest
+                if int(message['id']) > int(last_message_id):  # Only process messages newer than the last_message_id
+                    logging.info(f"New message from {message['author']['username']}: {message['content']}")
+                    message_queue.append((message, telegram_chat_id, thread_id))
+                    last_message_id = message['id']  # Update last_message_id to the latest processed message
 
 # Main loop to keep checking for new messages
 async def run():
