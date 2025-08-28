@@ -1,4 +1,5 @@
 # 📩 Message Forwarding from Discord to Telegram 🤖
+![views](https://visitor-badge.laobi.icu/badge?page_id=mrkorzun.discord-telegram-message-forwarder&left_text=views)
 
 This Python script automates the process of fetching messages from Discord threads and forwarding them to specified Telegram chats using the Discord and Telegram APIs. It is designed to ensure smooth operation by avoiding message flooding and handling errors gracefully.
 
